@@ -20,7 +20,8 @@ from langchain_community.retrievers import BM25Retriever
 from langchain.retrievers import EnsembleRetriever
 import utils
 import constants as ct
-
+import csv
+import random
 
 ############################################################
 # 設定関連
@@ -44,6 +45,8 @@ def initialize():
     initialize_logger()
     # RAGのRetrieverを作成
     initialize_retriever()
+    # csvファイルに在庫データをランダムで追加
+    initialize_stock_status()
 
 
 def initialize_logger():
@@ -148,3 +151,18 @@ def adjust_string(s):
     
     # OSがWindows以外の場合はそのまま返す
     return s
+
+# ランダムに在庫ステータスを追加
+def initialize_stock_status():
+    with open(ct.RAG_SOURCE_PATH, mode='r', encoding='utf-8') as infile:
+        reader = csv.DictReader(infile)
+        fieldnames = reader.fieldnames + ["stock_status"]  # 新しい列を追加
+        rows = []
+
+        for row in reader:
+            row["stock_status"] = random.choice(ct.STOCK_STATUS_OPTIONS)  # ランダムに在庫ステータスを割り振る
+            rows.append(row)
+    with open(ct.RAG_SOURCE_PATH, mode='w', encoding='utf-8', newline='') as outfile:
+        writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)

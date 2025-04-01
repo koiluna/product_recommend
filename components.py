@@ -69,6 +69,12 @@ def display_product(result):
             価格：{product['price']}
     """)
 
+    # 在庫ステータス　＊stock_statusに応じてメッセージとアイコンを変数表示
+    st.success(f"""
+            st.markdown({product['stock_status']})
+            st.markdown({ct.STOCK_LESS_TEXT})
+    """)
+
     # 「商品カテゴリ」と「メーカー」と「ユーザー評価」
     st.code(f"""
         商品カテゴリ：{product['category']}\n
