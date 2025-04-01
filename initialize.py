@@ -156,12 +156,18 @@ def adjust_string(s):
 def initialize_stock_status():
     with open(ct.RAG_SOURCE_PATH, mode='r', encoding='utf-8') as infile:
         reader = csv.DictReader(infile)
+        
+        # すでにstock_status列が存在する場合は処理をスキップ
+        if "stock_status" in reader.fieldnames:
+            return
+        
         fieldnames = reader.fieldnames + ["stock_status"]  # 新しい列を追加
         rows = []
 
         for row in reader:
             row["stock_status"] = random.choice(ct.STOCK_STATUS_OPTIONS)  # ランダムに在庫ステータスを割り振る
             rows.append(row)
+    
     with open(ct.RAG_SOURCE_PATH, mode='w', encoding='utf-8', newline='') as outfile:
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
         writer.writeheader()
