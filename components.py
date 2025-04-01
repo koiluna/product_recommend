@@ -71,8 +71,8 @@ def display_product(result):
 
     # 在庫ステータス　＊stock_statusに応じてメッセージとアイコンを変数表示
     st.success(f"""
-            st.markdown({product['stock_status']})
-            st.markdown({ct.STOCK_LESS_TEXT})
+            {product['stock_status']}\n
+            {ct.STOCK_LESS_TEXT}
     """)
 
     # 「商品カテゴリ」と「メーカー」と「ユーザー評価」
