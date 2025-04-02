@@ -153,7 +153,7 @@ def adjust_string(s):
     # OSがWindows以外の場合はそのまま返す
     return s
 
-# ランダムに在庫ステータスを追加（生成AIを使用）
+# 在庫ステータスを追加（生成AIを使用）
 def initialize_stock_status():
     """
     CSVファイルにstock_status列を追加し、生成AIを使用して在庫ステータスを割り振る。

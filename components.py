@@ -70,10 +70,13 @@ def display_product(result):
     """)
 
     # 在庫ステータス　＊stock_statusに応じてメッセージとアイコンを変数表示
-    if product['stock_status'] == "残りわずか":
+    stock_status = product['stock_status']
+    if stock_status == "残りわずか":
         st.warning(message=ct.STOCK_LESS_TEXT, icon="⚠️")
-    elif product['stock_status'] == "なし":
+    elif stock_status == "なし":
         st.error(message=ct.STOCK_NONE_TEXT, icon="ℹ️")
+    else:
+        st.info("在庫情報が不明です。")
 
     # 「商品カテゴリ」と「メーカー」と「ユーザー評価」
     st.code(f"""
