@@ -202,7 +202,6 @@ def generate_stock_status(product_name):
     )
 
     # 在庫ステータスを生成
-    openai.api_key = os.getenv("OPENAI_API_KEY")
     response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
         messages=[
@@ -212,7 +211,7 @@ def generate_stock_status(product_name):
         temperature=0.5,
         max_tokens=20
     )
-    stock_status = response.choices[0].message["content"].strip()
+    stock_status = response.choices[0].message.content.strip()
     
     # 応答が期待される値でない場合のデフォルト処理
     if stock_status not in ["あり", "残りわずか", "なし"]:
