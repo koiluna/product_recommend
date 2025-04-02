@@ -203,7 +203,11 @@ def generate_stock_status(product_name):
 
     # 在庫ステータスを生成
     llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.5, max_tokens=20)
-    stock_status = llm(prompt).strip()
+    response = llm.generate([
+    {"role": "system", "content": "あなたは在庫ステータスを生成するアシスタントです。"},
+    {"role": "user", "content": prompt}
+    ])
+    stock_status = response.generations[0].text.strip()
     
     # 応答が期待される値でない場合のデフォルト処理
     if stock_status not in ["あり", "残りわずか", "なし"]:
