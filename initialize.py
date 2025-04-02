@@ -21,7 +21,7 @@ from langchain.retrievers import EnsembleRetriever
 import utils
 import constants as ct
 import csv
-import random
+import openai
 
 ############################################################
 # 設定関連
@@ -43,10 +43,11 @@ def initialize():
     initialize_session_id()
     # ログ出力の設定
     initialize_logger()
+    # csvファイルに在庫データ列を追加
+    initialize_stock_status()
     # RAGのRetrieverを作成
     initialize_retriever()
-    # csvファイルに在庫データをランダムで追加
-    initialize_stock_status()
+
 
 
 def initialize_logger():
@@ -152,8 +153,12 @@ def adjust_string(s):
     # OSがWindows以外の場合はそのまま返す
     return s
 
-# ランダムに在庫ステータスを追加
+# ランダムに在庫ステータスを追加（生成AIを使用）
 def initialize_stock_status():
+    """
+    CSVファイルにstock_status列を追加し、生成AIを使用して在庫ステータスを割り振る。
+    すでにstock_status列が存在する場合は処理をスキップする。
+    """
     with open(ct.RAG_SOURCE_PATH, mode='r', encoding='utf-8') as infile:
         reader = csv.DictReader(infile)
         
@@ -161,14 +166,49 @@ def initialize_stock_status():
         if "stock_status" in reader.fieldnames:
             return
         
-        fieldnames = reader.fieldnames + ["stock_status"]  # 新しい列を追加
+        # 新しい列を追加
+        fieldnames = reader.fieldnames + ["stock_status"]
         rows = []
 
+        # 各行に生成AIを使用して在庫ステータスを割り振る
         for row in reader:
-            row["stock_status"] = random.choice(ct.STOCK_STATUS_OPTIONS)  # ランダムに在庫ステータスを割り振る
+            product_name = row["name"]  # 商品名を基に在庫ステータスを生成
+            stock_status = generate_stock_status(product_name)  # 生成AIで在庫ステータスを生成
+            row["stock_status"] = stock_status
             rows.append(row)
     
+    # ファイルを上書きして保存
     with open(ct.RAG_SOURCE_PATH, mode='w', encoding='utf-8', newline='') as outfile:
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
+
+
+def generate_stock_status(product_name):
+    """
+    生成AIを使用して在庫ステータスを生成する。
+
+    Args:
+        product_name (str): 商品名
+
+    Returns:
+        str: 生成された在庫ステータス（例: "あり", "残りわずか", "なし"）
+    """
+    prompt = f"以下の商品に対して適切な在庫ステータスを生成してください。\n\n商品名: {product_name}\n\n在庫ステータスは次のいずれかから選んでください: 'あり', '残りわずか', 'なし'。"
+    
+    # OpenAI APIを使用して在庫ステータスを生成
+    response = openai.Completion.create(
+        model="gpt-4o-mini",
+        prompt=prompt,
+        max_tokens=5,
+        temperature=0.7
+    )
+    
+    # 応答から在庫ステータスを抽出
+    stock_status = response.choices[0].text.strip()
+    
+    # 応答が期待される値でない場合のデフォルト処理
+    if stock_status not in ["あり", "残りわずか", "なし"]:
+        stock_status = "なし"  # デフォルト値
+    
+    return stock_status
