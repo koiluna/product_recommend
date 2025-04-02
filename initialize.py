@@ -202,7 +202,7 @@ def generate_stock_status(product_name):
     )
     
     # OpenAI APIを使用して在庫ステータスを生成
-    response = openai.ChatCompletion.create(
+    response = st.session_state.chat.completions.create(
         model="gpt-4o-mini",  # 使用するモデル
         messages=[
             {"role": "system", "content": "あなたは在庫ステータスを生成するアシスタントです。"},
@@ -212,7 +212,7 @@ def generate_stock_status(product_name):
     )
     
     # 応答から在庫ステータスを抽出
-    if response.choices and "message" in response.choices[0]:
+    if response.choices:
         stock_status = response.choices[0].message["content"].strip()
     else:
         stock_status = "なし"  # デフォルト値
