@@ -21,7 +21,7 @@ from langchain.retrievers import EnsembleRetriever
 import utils
 import constants as ct
 import csv
-import openai
+from langchain_openai import ChatOpenAI
 
 ############################################################
 # 設定関連
@@ -200,31 +200,10 @@ def generate_stock_status(product_name):
         "在庫ステータスは次のいずれかから選んでください: 'あり', '残りわずか', 'なし'。\n"
         "回答は必ず1つの選択肢のみを返してください。"
     )
-    
-    # `st.session_state.llm`が初期化されていない場合の処理
-    if "llm" not in st.session_state:
-        st.session_state.llm = openai.ChatCompletion  # OpenAI APIの初期化
 
-    try:
-        # OpenAI APIを使用して在庫ステータスを生成
-        response = st.session_state.llm.create(
-            model="gpt-4o-mini",  # 使用するモデル
-            messages=[
-                {"role": "system", "content": "あなたは在庫ステータスを生成するアシスタントです。"},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.5,
-            max_tokens=20  # 必要に応じて調整
-        )
-        
-        # 応答から在庫ステータスを抽出
-        stock_status = response.choices[0].message["content"].strip()
-    except openai.error.OpenAIError:
-        stock_status = "なし"  # エラー時のデフォルト値
-
-    
-    # 応答から在庫ステータスを抽出
-    stock_status = response.choices[0].message.content.strip()
+    # 在庫ステータスを生成
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.5, max_tokens=20)
+    stock_status = llm(prompt).strip()
     
     # 応答が期待される値でない場合のデフォルト処理
     if stock_status not in ["あり", "残りわずか", "なし"]:
