@@ -202,7 +202,7 @@ def generate_stock_status(product_name):
     )
 
     # 在庫ステータスを生成
-    response = openai.chat.comletions.create(
+    response = openai.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "あなたは在庫ステータスを生成するアシスタントです。"},
