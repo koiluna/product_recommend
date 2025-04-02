@@ -178,13 +178,10 @@ def initialize_stock_status():
             rows.append(row)
     
     # ファイルを上書きして保存
-    try:
-        with open(ct.RAG_SOURCE_PATH, mode='w', encoding='utf-8', newline='') as outfile:
-            writer = csv.DictWriter(outfile, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(rows)
-    except Exception as e:
-        print(f"ファイルの保存中にエラーが発生しました: {e}")
+    with open(ct.RAG_SOURCE_PATH, mode='w', encoding='utf-8', newline='') as outfile:
+        writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def generate_stock_status(product_name):
@@ -205,7 +202,7 @@ def generate_stock_status(product_name):
     )
 
     # 在庫ステータスを生成
-    response = openai.ChatCompletion.create(
+    response = openai.chat.comletions.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "あなたは在庫ステータスを生成するアシスタントです。"},
