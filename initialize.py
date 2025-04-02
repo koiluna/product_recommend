@@ -163,7 +163,7 @@ def initialize_stock_status():
         reader = csv.DictReader(infile)
         
         # すでにstock_status列が存在する場合は処理をスキップ
-        if "stock_status" in reader.fieldnames:
+        if not reader.fieldnames or "stock_status" in reader.fieldnames:
             return
         
         # 新しい列を追加
@@ -208,12 +208,14 @@ def generate_stock_status(product_name):
             {"role": "system", "content": "あなたは在庫ステータスを生成するアシスタントです。"},
             {"role": "user", "content": prompt}
         ],
-        max_tokens=10,
         temperature=0.7
     )
     
     # 応答から在庫ステータスを抽出
-    stock_status = response.choices[0].message["content"].strip()
+    if response.choices and "message" in response.choices[0]:
+        stock_status = response.choices[0].message["content"].strip()
+    else:
+        stock_status = "なし"  # デフォルト値
     
     # 応答が期待される値でない場合のデフォルト処理
     if stock_status not in ["あり", "残りわずか", "なし"]:
