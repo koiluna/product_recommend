@@ -21,7 +21,7 @@ from langchain.retrievers import EnsembleRetriever
 import utils
 import constants as ct
 import csv
-import openai
+from langchain_openai import ChatOpenAI
 
 ############################################################
 # 設定関連
@@ -202,8 +202,8 @@ def generate_stock_status(product_name):
     )
     
     # OpenAI APIを使用して在庫ステータスを生成
-    response = st.session_state.chat.completions.create(
-        model="gpt-4o-mini",  # 使用するモデル
+    llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0.5)
+    response = llm.chat.completions.create(
         messages=[
             {"role": "system", "content": "あなたは在庫ステータスを生成するアシスタントです。"},
             {"role": "user", "content": prompt}
@@ -213,7 +213,7 @@ def generate_stock_status(product_name):
     
     # 応答から在庫ステータスを抽出
     if response.choices:
-        stock_status = response.choices[0].message["content"].strip()
+        stock_status = response.choices[0].message.content.strip()
     else:
         stock_status = "なし"  # デフォルト値
     
