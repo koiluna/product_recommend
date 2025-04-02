@@ -201,16 +201,27 @@ def generate_stock_status(product_name):
         "回答は必ず1つの選択肢のみを返してください。"
     )
     
-    # OpenAI APIを使用して在庫ステータスを生成
-    llm=st.session_state.llm
-    response = llm.chat.completions.create(
-        model="gpt-4o-mini",  # 使用するモデル
-        messages=[
-            {"role": "system", "content": "あなたは在庫ステータスを生成するアシスタントです。"},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.5,
-    )
+    # `st.session_state.llm`が初期化されていない場合の処理
+    if "llm" not in st.session_state:
+        st.session_state.llm = openai.ChatCompletion  # OpenAI APIの初期化
+
+    try:
+        # OpenAI APIを使用して在庫ステータスを生成
+        response = st.session_state.llm.create(
+            model="gpt-4o-mini",  # 使用するモデル
+            messages=[
+                {"role": "system", "content": "あなたは在庫ステータスを生成するアシスタントです。"},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.5,
+            max_tokens=20  # 必要に応じて調整
+        )
+        
+        # 応答から在庫ステータスを抽出
+        stock_status = response.choices[0].message["content"].strip()
+    except openai.error.OpenAIError:
+        stock_status = "なし"  # エラー時のデフォルト値
+
     
     # 応答から在庫ステータスを抽出
     stock_status = response.choices[0].message.content.strip()
