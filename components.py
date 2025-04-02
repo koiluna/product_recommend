@@ -75,8 +75,6 @@ def display_product(result):
         st.warning(message=ct.STOCK_LESS_TEXT, icon="⚠︎")
     elif stock_status == "なし":
         st.error(message=ct.STOCK_NONE_TEXT, icon="ⓘ")
-    else:
-        st.info("在庫情報が不明です。")
 
     # 「商品カテゴリ」と「メーカー」と「ユーザー評価」
     st.code(f"""

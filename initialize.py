@@ -163,7 +163,7 @@ def initialize_stock_status():
         reader = csv.DictReader(infile)
         
         # すでにstock_status列が存在する場合は処理をスキップ
-        if not reader.fieldnames or "stock_status" in reader.fieldnames:
+        if "stock_status" in reader.fieldnames:
             return
         
         # 新しい列を追加
