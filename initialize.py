@@ -213,7 +213,7 @@ def generate_stock_status(product_name):
     )
     
     # 応答から在庫ステータスを抽出
-    stock_status = response.choices[0].text.strip()
+    stock_status = response.choices[0].message["content"].strip()
     
     # 応答が期待される値でない場合のデフォルト処理
     if stock_status not in ["あり", "残りわずか", "なし"]:
