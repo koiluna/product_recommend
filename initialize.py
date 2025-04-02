@@ -182,6 +182,7 @@ def initialize_stock_status():
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
+        outfile.flush()
 
 
 def generate_stock_status(product_name):
