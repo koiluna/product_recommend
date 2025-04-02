@@ -178,10 +178,13 @@ def initialize_stock_status():
             rows.append(row)
     
     # ファイルを上書きして保存
-    with open(ct.RAG_SOURCE_PATH, mode='w', encoding='utf-8', newline='') as outfile:
-        writer = csv.DictWriter(outfile, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
+    try:
+        with open(ct.RAG_SOURCE_PATH, mode='w', encoding='utf-8', newline='') as outfile:
+            writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows)
+    except Exception as e:
+        print(f"ファイルの保存中にエラーが発生しました: {e}")
 
 
 def generate_stock_status(product_name):
