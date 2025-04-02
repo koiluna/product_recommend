@@ -192,15 +192,23 @@ def generate_stock_status(product_name):
         product_name (str): 商品名
 
     Returns:
-        str: 生成された在庫ステータス（例: "あり", "残りわずか", "なし"）
+        str: 生成された在庫ステータス("あり", "残りわずか", "なし"）
     """
-    prompt = f"以下の商品に対して適切な在庫ステータスを生成してください。\n\n商品名: {product_name}\n\n在庫ステータスは次のいずれかから選んでください: 'あり', '残りわずか', 'なし'。"
+    prompt = (
+        f"以下の商品に対して適切な在庫ステータスを生成してください。\n\n"
+        f"商品名: {product_name}\n\n"
+        "在庫ステータスは次のいずれかから選んでください: 'あり', '残りわずか', 'なし'。\n"
+        "回答は必ず1つの選択肢のみを返してください。"
+    )
     
     # OpenAI APIを使用して在庫ステータスを生成
-    response = openai.Completion.create(
-        model="gpt-4o-mini",
-        prompt=prompt,
-        max_tokens=5,
+    response = openai.ChatCompletion.create(
+        model="gpt-4o-mini",  # 使用するモデル
+        messages=[
+            {"role": "system", "content": "あなたは在庫ステータスを生成するアシスタントです。"},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=10,
         temperature=0.7
     )
     
