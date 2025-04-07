@@ -17,10 +17,10 @@ CHAT_INPUT_HELPER_TEXT = "こちらからお探しの商品の特徴や名前を
 SPINNER_TEXT = "レコメンドする商品の検討中..."
 STOCK_LESS = "残りわずか"
 STOCK_LESS_TEXT = "ご好評につき、在庫数が残りわずかです。購入をご希望の場合、お早めのご注文をおすすめいたします。"
-STOCK_LESS_ICON = "⚠︎"
+STOCK_LESS_ICON = "⚠️"
 STOCK_NONE = "なし"
 STOCK_NONE_TEXT = "申し訳ございませんが、本商品は在庫切れとなっております。入荷までもうしばらくお待ちください。"
-STOCK_NONE_ICON = "ⓘ"
+STOCK_NONE_ICON = "ℹ️"
 
 # ==========================================
 # ログ出力系
