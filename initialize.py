@@ -164,7 +164,6 @@ def initialize_stock_status():
         # すでにstock_status列が存在する場合は処理をスキップ
         if "stock_status" in reader.fieldnames:
             return
-        
         # 新しい列を追加
         fieldnames = reader.fieldnames + ["stock_status"]
         rows = []
