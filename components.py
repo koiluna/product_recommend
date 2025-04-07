@@ -70,7 +70,7 @@ def display_product(result):
     """)
 
     # 在庫ステータス　＊stock_statusに応じてメッセージとアイコンを変数表示
-    stock_status = product['stock_status']
+    stock_status = {product['stock_status']}
     if stock_status == ct.STOCK_LESS:
         st.warning(message=ct.STOCK_LESS_TEXT, icon=ct.STOCK_LESS_ICON)
     elif stock_status == ct.STOCK_NONE:
