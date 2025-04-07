@@ -161,7 +161,6 @@ def initialize_stock_status():
     """
     with open(ct.RAG_SOURCE_PATH, mode='r', encoding='utf-8') as infile:
         reader = csv.DictReader(infile)
-        print(reader.fieldnames)
         # すでにstock_status列が存在する場合は処理をスキップ
         if "stock_status" in reader.fieldnames:
             return
@@ -176,13 +175,10 @@ def initialize_stock_status():
             stock_status = generate_stock_status(product_name)  # 生成AIで在庫ステータスを生成
             row["stock_status"] = stock_status
             rows.append(row)
-            print(row)
     
     # ファイルを上書きして保存
     with open(ct.RAG_SOURCE_PATH, mode='w', encoding='utf-8', newline='') as outfile:
         writer = csv.DictWriter(outfile, fieldnames=fieldnames)
-        print(outfile)
-        print(fieldnames)
         writer.writeheader()
         writer.writerows(rows)
         outfile.flush()
